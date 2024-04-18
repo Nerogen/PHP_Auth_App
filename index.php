@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Main</title>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="templates/js/script.js"></script>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="templates/css/style.css">
 </head>
@@ -34,18 +35,22 @@
             <!-- Registration Form -->
             <div id="registrationForm" class="form-container mb-4" style="display: none;">
                 <h2 class="text-center mb-4">Register</h2>
-                <form method="post">
+                <form method="post" id="reg-form">
                     <div class="form-group">
                         <input type="text" class="form-control" placeholder="Login" name="login" required>
+                        <div class="alert alert-danger mt-2" role="alert" id="login-reg"></div>
                     </div>
                     <div class="form-group">
                         <input type="email" class="form-control" placeholder="Email" name="email" required>
+                        <div class="alert alert-danger mt-2" role="alert" id="email-reg"></div>
                     </div>
                     <div class="form-group">
                         <input type="password" class="form-control" placeholder="Password" name="password" required>
+                        <div class="alert alert-danger mt-2" role="alert" id="password-reg"></div>
                     </div>
                     <div class="form-group">
-                        <input type="password" class="form-control" placeholder="Confirm Password" name="confpass" required>
+                        <input type="password" class="form-control" placeholder="Confirm Password" name="repeatPass" required>
+                        <div class="alert alert-danger mt-2" role="alert" id="repeatPass-reg"></div>
                     </div>
                     <button type="submit" class="btn btn-primary btn-block">Register</button>
                 </form>
@@ -69,58 +74,5 @@
         </div>
     </div>
 </div>
-
-<script>
-    $(document).ready(function () {
-        // Functionality to show/hide registration form
-        $("#showRegistrationFormButton").click(function(){
-            $("#registrationForm").toggle();
-            $("#loginForm").hide(); // Hide login form when showing registration form
-        });
-
-        // Functionality to show/hide login form
-        $("#showLoginFormButton").click(function(){
-            $("#loginForm").toggle();
-            $("#registrationForm").hide(); // Hide registration form when showing login form
-        });
-    });
-</script>
-<script>
-    $(document).ready(function () {
-        $('#login-auth').hide()
-        $('#pass-auth').hide()
-        // Handle form submissions
-        $('#auth-form').on("submit", function (event) {
-            event.preventDefault(); // Prevent default form submission
-
-            // Send POST request to backend.php
-            $.post("./app/View/backend.php", $(this).serialize(), function (response) {
-                // Process JSON response from php
-                if (response.success) {
-                    $('#auth-form')[0].reset();
-                    $('#login-auth').hide()
-                    $('#pass-auth').hide()
-                    $('#loginForm').toggle();
-                    $('#console-label').html('Login is success!')
-                }
-                else {
-                    $('#auth-form')[0].reset();
-                    if (!response.error.login) {
-                        $('#login-auth').hide()
-                    }
-                    if (response.error.login) {
-                        $('#login-auth').html(response.error.login).show();
-                    }
-                    if (!response.error.password){
-                        $('#pass-auth').hide();
-                    }
-                    if (response.error.password){
-                        $('#pass-auth').html(response.error.password).show();
-                    }
-                }
-                }, 'json');
-        });
-    });
-</script>
 </body>
 </html>

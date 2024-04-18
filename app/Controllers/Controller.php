@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controllers;
 
 class Controller
 {
@@ -16,17 +16,48 @@ class Controller
         $this->repeatPass = $repeatPass;
         $this->email = $email;
     }
+    public function run(): void
+    {
+        session_start();
+        $validation = $this->isValid();
 
-    public function loginValidation(): string
+        if ($validation['success'] && $this->repeatPass && $this->email) {
+            $model = new App\Model\Model('../../db/db.json');
+            $model->create($this->login, $this->pass, $this->repeatPass, $this->email);
+        }
+        else if ($validation['success'] && !$this->repeatPass && !$this->email) {
+            $_SESSION['user'] = $this->login;
+            $cookie_name = "user";
+            $cookie_value = $this->login;
+            setcookie($cookie_name, $cookie_value, time() + (300), "/");
+        }
+        else {
+            echo $validation;
+        }
+
+    }
+
+    private function checkAjaxRequest(): string
     {
         $message = "";
-        if (strlen($this->login) < 6) {
-            $message =  "Login must be more than 5 characters";
+        if (!isset($_SERVER['HTTP_X_REQUESTED_WITH']) || strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) !== 'xmlhttprequest') {
+            $message = "Access denied (request isn't from ajax)";
         }
         return $message;
     }
 
-    public function passwordValidation(): string
+    private function loginValidation(): string
+    {
+        // return "" -> false   || "Login must be more than 5 characters" -> true
+        // (error not occurred) || (error occurred)
+        $message = "";
+        if (strlen($this->login) < 6) {
+            $message = "Login must be more than 5 characters";
+        }
+        return $message;
+    }
+
+    private function passwordValidation(): string
     {
         $message = "";
         if (strlen($this->pass) < 6) {
@@ -37,7 +68,7 @@ class Controller
         return $message;
     }
 
-    public function emailValidation(): string
+    private function emailValidation(): string
     {
         $message = "";
         if ((strlen($this->email) < 2 || !preg_match("/^[A-Za-z]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/", $this->email))) {
@@ -46,7 +77,7 @@ class Controller
         return $message;
     }
 
-    public function repeatPasswordValidation(): string
+    private function repeatPasswordValidation(): string
     {
         $message = "";
         if ($this->pass != $this->repeatPass) {
@@ -55,7 +86,7 @@ class Controller
         return $message;
     }
 
-    public function isValidAuthData(): array
+    private function isValidAuthData(): array
     {
         $errors = [];
         $loginResult = $this->loginValidation();
@@ -69,9 +100,9 @@ class Controller
         return $errors;
     }
 
-    public function isValidRegistrationData(): array
+    private function isValidRegistrationData(): array
     {
-        $errors = $this->isValidAuthData();
+        $errors = $this->isValidAuthData(); // call check on (login, pass)
         $repeatPassResult = $this->repeatPasswordValidation();
         $emailResult = $this->emailValidation();
 
@@ -87,17 +118,17 @@ class Controller
 
     public function isValid(): false|string
     {
+        // define form for validation
+        // registration -> 4 fields | auth -> 2 fields
         if (!$this->repeatPass && !$this->email) {
             $result = $this->isValidAuthData();
-        }
-        else {
+        } else {
             $result = $this->isValidRegistrationData();
         }
 
         if ($result) {
             return json_encode(['error' => $result]);
-        }
-        else {
+        } else {
             return json_encode(['success' => true]);
         }
     }
