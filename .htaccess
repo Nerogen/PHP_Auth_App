@@ -1,0 +1,4 @@
+<Files "PHP_Auth_App/db/db.json">
+    Order Deny,Allow
+    Deny from all
+</Files>
