@@ -1,3 +1,7 @@
+RewriteEngine on
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^.*$ ../app/Views/index.php [L,QSA]
 <Files "db.json">
     Order allow,deny
     Deny from all

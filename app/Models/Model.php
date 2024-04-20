@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
-class Model
+use App\Entities\CRUDDBInterface;
+
+class Model implements CRUDDBInterface
 {
     private string $dbPass;
 
@@ -11,19 +13,19 @@ class Model
         $this->dbPass = $dbPass;
     }
 
-    private function readFromDB(): array
+    public function readFromDB(): array
     {
         $jsonData = file_get_contents($this->dbPass);
         return json_decode($jsonData, true);
     }
 
-    private function writeToDB($data): bool
+    public function writeToDB($data): bool
     {
         $jsonData = json_encode($data);
         return file_put_contents($this->dbPass, $jsonData) !== false;
     }
 
-    public function create(string $login, string $password, string $confirmPass, string $email): bool
+    public function create(string $login, string $password, string $email): bool
     {
         $data = $this->readFromDB();
 
@@ -34,7 +36,6 @@ class Model
         $userData = [
             'login' => $login,
             'password' => $password,
-            'confirm_pass' => $confirmPass,
             'email' => $email
         ];
 
@@ -74,7 +75,7 @@ class Model
         return null; // User not found
     }
 
-    public function update(string $login, string $password, string $confirmPass, string $email): bool
+    public function update(string $login, string $password, string $email): bool
     {
         $data = $this->readFromDB();
 
@@ -83,7 +84,6 @@ class Model
             if ($userInfo['login'] === $login) {
                 // Update user data
                 $data[$id]['password'] = $password;
-                $data[$id]['confirm_pass'] = $confirmPass;
                 $data[$id]['email'] = $email;
 
                 return $this->writeToDB($data);

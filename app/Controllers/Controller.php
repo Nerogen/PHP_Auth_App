@@ -2,30 +2,36 @@
 
 namespace App\Controllers;
 
+use App\Entities\FormValidator;
 use App\Models\Model;
 
 class Controller
 {
+
+    private FormValidator $validator;
+    private Model $model;
+    private string $salt;
+
+    public function __construct(string $passToDb, string $salt)
+    {
+        $this->validator = new FormValidator();
+        $this->model = new Model($passToDb);
+        $this->salt = $salt;
+    }
     public function run($login, $pass, $repeatPass, $email): void
     {
-        $validator = new Validator();
-        $validation = $validator->isValid($login, $pass, $repeatPass, $email);
+        $validation = $this->validator->isValid($login, $pass, $repeatPass, $email);
 
-        if ($validation['success'] && $repeatPass && $email) {
-            $model = new Model('../../db/db.json');
-            $salt = 'hello';
-            $model->create($login, md5($salt . $pass), $repeatPass, $email);
-            echo json_encode($validation);
-        } else if ($validation['success'] && !$repeatPass && !$email) {
+        if ($validation['success'] && $repeatPass && $email) { // if registration form
+            $this->model->create($login, md5($this->salt . $pass), $repeatPass, $email);
+        } else if ($validation['success'] && !$repeatPass && !$email) {  // if login form
             $_SESSION['user'] = $login;
+            $validation['user'] = $login;
             $cookie_name = "user";
             $cookie_value = $login;
             setcookie($cookie_name, $cookie_value, time() + (300), "/");
-            $validation['user'] = $login;
-            echo json_encode($validation);
-        } else {
-            echo json_encode($validation);
         }
+        echo json_encode($validation);
     }
 
     public function logout(): void
@@ -41,7 +47,7 @@ class Controller
 
 session_start();
 require_once "../../vendor/autoload.php";
-$controller = new Controller();
+$controller = new Controller('../../db/db.json', 'hello');
 if (!isset($_SERVER['HTTP_X_REQUESTED_WITH']) || strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) !== 'xmlhttprequest') {
     echo json_encode(["login" => "Access denied (request isn't from ajax)"]);
 }

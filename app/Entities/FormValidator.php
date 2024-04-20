@@ -1,51 +1,11 @@
 <?php
 
-namespace App\Controllers;
+namespace App\Entities;
 
 use App\Models\Model;
 
-class Validator
+class FormValidator extends RegistrationFormValidation
 {
-    private function loginValidation($login): string
-    {
-        // return "" -> false   || "Login must be more than 5 characters" -> true
-        // (error not occurred) || (error occurred)
-        $message = "";
-
-        if (strlen($login) < 6) {
-            $message = "Login must be more than 5 characters";
-        }
-        return $message;
-    }
-
-    private function passwordValidation($pass): string
-    {
-        $message = "";
-        if (strlen($pass) < 6) {
-            $message = "Password must be more than 5 characters";
-        } elseif (!ctype_alnum($pass) || (ctype_digit($pass) || ctype_alpha($pass))) {
-            $message = "Password must contain letters and numbers";
-        }
-        return $message;
-    }
-
-    private function emailValidation($email): string
-    {
-        $message = "";
-        if ((strlen($email) < 2 || !preg_match("/^[A-Za-z]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/", $email))) {
-            $message = "Email must be more then 1 characters and with only letters";
-        }
-        return $message;
-    }
-
-    private function repeatPasswordValidation($pass, $repeatPass): string
-    {
-        $message = "";
-        if ($pass != $repeatPass) {
-            $message = "Password does not match";
-        }
-        return $message;
-    }
 
     private function isValidAuthData($login, $pass): array
     {
