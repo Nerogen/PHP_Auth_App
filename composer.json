@@ -5,7 +5,6 @@
     }
   },
   "require": {
-    "php": "^8.2",
     "ext-ctype": "*"
   }
 }

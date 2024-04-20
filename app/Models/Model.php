@@ -44,12 +44,29 @@ class Model
         return $this->writeToDB($data);
     }
 
-    public function read(string $login): ?array
+    public function readByLogin(string $login): ?array
     {
+
         $data = $this->readFromDB();
 
         foreach ($data as $userInfo) {  // find user by login
-            if ($userInfo['login'] === $login) {
+            if ($userInfo['login']) {
+                if ($userInfo['login'] === $login) {
+                    return $userInfo;
+                }
+            }
+        }
+
+        return null; // User not found
+    }
+
+    public function readByEmail(string $email): ?array
+    {
+
+        $data = $this->readFromDB();
+
+        foreach ($data as $userInfo) {  // find user by login
+            if ($userInfo['email'] === $email) {
                 return $userInfo;
             }
         }

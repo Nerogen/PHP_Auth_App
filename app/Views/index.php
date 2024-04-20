@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Main</title>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-    <script src="templates/js/script.js"></script>
+    <script src="../../templates/js/script.js"></script>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="templates/css/style.css">
+    <link rel="stylesheet" href="../../templates/css/style.css">
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
@@ -18,6 +18,11 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <form id="logoutForm" method="post">
+                    <button type="submit" id="Logout" class="btn btn-link nav-link">Logout</button>
+                </form>
+            </li>
             <li class="nav-item">
                 <button id="showRegistrationFormButton" class="btn btn-link nav-link">Registration</button>
             </li>
