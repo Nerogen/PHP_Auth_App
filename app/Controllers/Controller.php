@@ -23,7 +23,7 @@ class Controller
         $validation = $this->validator->isValid($login, $pass, $repeatPass, $email);
 
         if ($validation['success'] && $repeatPass && $email) { // if registration form
-            $this->model->create($login, md5($this->salt . $pass), $repeatPass, $email);
+            $this->model->create($login, md5($this->salt . $pass), $email);
         } else if ($validation['success'] && !$repeatPass && !$email) {  // if login form
             $_SESSION['user'] = $login;
             $validation['user'] = $login;
