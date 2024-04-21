@@ -14,7 +14,7 @@ class Controller
 
     public function __construct(string $passToDb, string $salt)
     {
-        $this->validator = new FormValidator();
+        $this->validator = new FormValidator($passToDb, $salt);
         $this->model = new Model($passToDb);
         $this->salt = $salt;
     }

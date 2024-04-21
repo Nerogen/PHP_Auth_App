@@ -7,15 +7,19 @@ use App\Models\Model;
 class FormValidator extends RegistrationFormValidation
 {
 
+    private Model $model;
+    private string $salt;
+
+    public function __construct(string $passToDb, string $salt) {
+        $this->model = new Model($passToDb);
+        $this->salt = $salt;
+    }
     private function isValidAuthData($login, $pass): array
     {
         $errors = [];
-        $model = new Model('../../db/db.json');
-        $salt = 'hello';
-
         $loginResult = $this->loginValidation($login);
         $passResult = $this->passwordValidation($pass);
-        $loginIsInDB = $model->readByLogin($login);
+        $loginIsInDB = $this->model->readByLogin($login);
 
 
         if ($loginResult) {
@@ -27,7 +31,7 @@ class FormValidator extends RegistrationFormValidation
         if ($passResult) {
             $errors['password'] = $passResult;
         }
-        if (md5($salt . $pass) != $loginIsInDB['password']) {
+        if (md5($this->salt . $pass) != $loginIsInDB['password']) {
             $errors['password'] = 'Password error';
         }
         return $errors;
@@ -35,13 +39,12 @@ class FormValidator extends RegistrationFormValidation
 
     private function isValidRegistrationData($login, $pass, $repeatPass, $email): array
     {
-        $model = new Model('../../db/db.json');
         $errors = [];
 
         $repeatPassResult = $this->repeatPasswordValidation($pass, $repeatPass);
         $emailResult = $this->emailValidation($email);
-        $emailIsInDB = $model->readByEmail($email);
-        $loginIsInDb = $model->readByLogin($login);
+        $emailIsInDB = $this->model->readByEmail($email);
+        $loginIsInDb = $this->model->readByLogin($login);
         $loginResult = $this->loginValidation($login);
         $passResult = $this->passwordValidation($pass);
 
