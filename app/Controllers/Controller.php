@@ -47,6 +47,7 @@ class Controller
 
 session_start();
 require_once "../../vendor/autoload.php";
+error_reporting(E_ERROR | E_PARSE);
 $controller = new Controller('../../db/db.json', 'hello');
 if (!isset($_SERVER['HTTP_X_REQUESTED_WITH']) || strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) !== 'xmlhttprequest') {
     echo json_encode(["login" => "Access denied (request isn't from ajax)"]);
