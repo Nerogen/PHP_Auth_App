@@ -30,8 +30,8 @@ $(document).ready(function () {
     }
 
 
-    $('#login-auth').hide()
-    $('#pass-auth').hide()
+    $('#login-auth').hide();
+    $('#pass-auth').hide();
     $('#login-reg').hide();
     $('#email-reg').hide();
     $('#repeatPass-reg').hide();
@@ -57,14 +57,14 @@ $(document).ready(function () {
     // Handle auth form
     $('#auth-form').on("submit", function (event) {
         event.preventDefault(); // Prevent default form submission
-
         // Send POST request to backend.php
-        $.post("../Controllers/Controller.php", $(this).serialize(), function (response) {
+        $.post("../../app/Controllers/Controller.php", $(this).serialize(), function (response) {
             // Process JSON response from php
+
             if (response.success) {
                 $('#auth-form')[0].reset();
-                $('#login-auth').hide()
-                $('#pass-auth').hide()
+                $('#login-auth').hide();
+                $('#pass-auth').hide();
                 $('#loginForm').toggle();
                 $('#console-label').html('Hello ' + response.user + '!');
                 hideRegistrationButton();
@@ -74,7 +74,7 @@ $(document).ready(function () {
             else {
                 $('#auth-form')[0].reset();
                 if (!response.error.login) {
-                    $('#login-auth').hide()
+                    $('#login-auth').hide();
                 }
                 if (response.error.login) {
                     $('#login-auth').html(response.error.login).show();
@@ -92,7 +92,7 @@ $(document).ready(function () {
     $('#logoutForm').on("submit", function (event) {
         event.preventDefault();
 
-        $.post("../Controllers/Controller.php", {'logout': true}, function (response) {
+        $.post("../../app/Controllers/Controller.php", {'logout': true}, function (response) {
             if (response['logout']) {
                 $('#console-label').html('You are not logged in or registered!');
                 hideLogoutButton();
@@ -106,7 +106,7 @@ $(document).ready(function () {
         event.preventDefault(); // Prevent default form submission
 
         // Send POST request to backend.php
-        $.post("../Controllers/Controller.php", $(this).serialize(), function (response) {
+        $.post("../../app/Controllers/Controller.php", $(this).serialize(), function (response) {
             // Process JSON response from php
             if (response.success) {
                 $('#reg-form')[0].reset();
@@ -120,7 +120,7 @@ $(document).ready(function () {
             else {
                 $('#reg-form')[0].reset();
                 if (!response.error.login) {
-                    $('#login-reg').hide()
+                    $('#login-reg').hide();
                 }
                 if (response.error.login) {
                     $('#login-reg').html(response.error.login).show();
